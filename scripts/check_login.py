@@ -19,11 +19,17 @@ def check_linkedin(p):
     try:
         page = ctx.new_page()
         page.goto("https://www.linkedin.com/in/me/", wait_until="domcontentloaded", timeout=45000)
-        page.wait_for_load_state("networkidle", timeout=20000)
+        # LinkedIn keeps polling, so never wait for "networkidle": wait for the name heading instead.
+        heading = page.get_by_role("heading", name=LINKEDIN_NAME, exact=True)
+        try:
+            heading.first.wait_for(timeout=30000)
+        except Exception:
+            pass
         if is_blocked(page) or "login" in page.url or "authwall" in page.url:
             return BLOCKED + " (LinkedIn sent the session to login/authwall)"
-        name = (page.locator("h1").first.inner_text(timeout=10000) or "").strip()
-        return "OK" if name == LINKEDIN_NAME else f"{BLOCKED} (profile name mismatch)"
+        if heading.count() > 0:
+            return "OK"
+        return f"{BLOCKED} (profile name not found; url={page.url.split('?')[0]})"
     except Exception as e:
         return f"{BLOCKED} ({type(e).__name__})"
     finally:
