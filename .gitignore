@@ -1,0 +1,14 @@
+# Browser login state — never commit
+*_state.json
+state/
+*.b64
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Debug output
+debug/
+*.png
+*.trace.zip
