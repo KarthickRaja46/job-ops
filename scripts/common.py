@@ -13,7 +13,8 @@ import sys
 import time
 from pathlib import Path
 
-os.environ.setdefault("PLAYWRIGHT_BROWSERS_PATH", "/opt/pw-browsers")
+if Path("/opt/pw-browsers").is_dir():  # cloud container; on a PC Playwright's default path is used
+    os.environ.setdefault("PLAYWRIGHT_BROWSERS_PATH", "/opt/pw-browsers")
 
 from playwright.sync_api import sync_playwright  # noqa: E402
 
