@@ -12,3 +12,6 @@ __pycache__/
 debug/
 *.png
 *.trace.zip
+
+# Saved browser profiles (logged-in sessions) — never commit
+profiles/

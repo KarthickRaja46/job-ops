@@ -1,13 +1,15 @@
 # job-ops — LinkedIn + Upwork runs (cloud session)
 
-Cloud only: no local computer, no Claude in Chrome. Use headless Python Playwright with the saved sessions.
+Runs on my own PC (Windows), not in the cloud: LinkedIn cancels logins that are moved to cloud servers.
+No Claude in Chrome. Use Python Playwright scripts.
 
 ## Login
-- State: uploaded `linkedin_state.json` / `upwork_state.json`, or `$LINKEDIN_STATE_B64` / `$UPWORK_STATE_B64`
-  (decoded to /tmp by `scripts/common.py`). Never commit, print or log them (`.gitignore` covers `*_state.json`).
-- Context: desktop Chrome user agent, locale en-US, timezone Asia/Dubai (see `scripts/common.py`).
-- Start every run with `python3 scripts/check_login.py`. A site that is not `OK` is
-  "BLOCKED: needs fresh state file". Skip it and carry on with the other one.
+- Each site uses a saved browser profile in `profiles/<site>/`, created by me with
+  `python scripts/login.py linkedin` (or `upwork`). Every run reuses that same profile, and no user agent is faked.
+  Never commit, print or log login data (`.gitignore` covers `profiles/` and `*_state.json`).
+- Locale en-US, timezone Asia/Dubai (see `scripts/common.py`). The window is visible by default; `JOBOPS_HEADLESS=1` hides it.
+- Start every run with `python scripts/check_login.py`. A site that is not `OK` is
+  "BLOCKED: needs fresh login". Skip it, carry on with the other one, and never retry a login automatically.
 
 ## Method
 - Work through scripts in `scripts/*.py` run with Bash. They print compact JSON only (title, company, link, status).
